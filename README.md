@@ -8,8 +8,9 @@ A developer collaboration platform: post project ideas with the roles and skills
 |---|---|
 | 1 | Auth (register, login, refresh-token rotation, logout), profiles, protected routes, dashboard |
 | 2 | Predefined skills (admin-managed), projects (create/edit/delete/publish), Explore (search, filters, sorting, pagination), project details |
+| 3 | Role-specific applications, owner review (accept/decline), and team membership when accepted |
 
-Not built yet: applications, team formation, tasks, chat, GitHub integration, notifications. The **Apply** button on a project page is intentionally disabled until applications ship.
+Not built yet: tasks, chat, GitHub integration, notifications. Phase 3 lets signed-in users apply to an open role with a message and profile skills; project owners can review applications from the dashboard or project page. Accepting an application adds the person to the team and fills a role slot. Owners can remove members or transfer ownership; members can leave. The API enforces these permissions.
 
 ## Stack
 
@@ -91,6 +92,20 @@ Every response is `{ success: true, data, meta? }` or `{ success: false, error: 
 | PATCH | `/projects/:id/status` | owner | Other lifecycle moves (`in_progress`, `completed`, restore to `draft`) |
 
 Lifecycle: `draft → recruiting ⇄ in_progress → completed`; anything → `archived`; `archived → draft`.
+
+## Applications (Phase 3)
+
+| Method | Path | Access | Purpose |
+|---|---|---|---|
+| POST | `/projects/:id/applications` | auth | Apply to an open role with an optional message |
+| GET | `/projects/:id/applications?status=pending` | project owner | Review applications |
+| PATCH | `/projects/:id/applications/:applicationId` | project owner | Accept or decline |
+| DELETE | `/projects/:id/applications/:applicationId` | applicant | Withdraw a pending application |
+| GET | `/projects/applications/mine` | auth | List the signed-in user's applications |
+| GET | `/projects/applications/received` | auth | List applications for projects the user owns |
+| DELETE | `/projects/:id/team/:memberId` | project owner | Remove a team member |
+| DELETE | `/projects/:id/team/me` | team member | Leave a project (owners must transfer ownership first) |
+| PATCH | `/projects/:id/owner` | project owner | Transfer ownership to an active team member |
 
 ## Design decisions worth knowing
 

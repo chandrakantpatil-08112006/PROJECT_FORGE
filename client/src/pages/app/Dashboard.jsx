@@ -9,6 +9,7 @@ import { LinkButton } from '../../components/ui/Button.jsx';
 import ErrorState from '../../components/ui/ErrorState.jsx';
 import Skeleton from '../../components/ui/Skeleton.jsx';
 import { selectUser } from '../../features/auth/authSlice.js';
+import ApplicationDashboard from '../../features/projects/components/ApplicationDashboard.jsx';
 import { useMyProjectsQuery } from '../../features/projects/projectsApi.js';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle.js';
 import { cn } from '../../lib/cn.js';
@@ -159,6 +160,11 @@ export default function Dashboard() {
           )}
         </aside>
       </div>
+
+      <section className="mt-8 space-y-3" aria-label="Project applications">
+        <h2 className="text-xl font-semibold">Applications and teams</h2>
+        <ApplicationDashboard />
+      </section>
     </>
   );
 }

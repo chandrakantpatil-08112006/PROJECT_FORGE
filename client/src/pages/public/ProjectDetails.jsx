@@ -10,6 +10,8 @@ import EmptyState from '../../components/ui/EmptyState.jsx';
 import ErrorState from '../../components/ui/ErrorState.jsx';
 import Skeleton from '../../components/ui/Skeleton.jsx';
 import ApplyButton from '../../features/projects/components/ApplyButton.jsx';
+import ApplicationsPanel from '../../features/projects/components/ApplicationsPanel.jsx';
+import TeamPanel from '../../features/projects/components/TeamPanel.jsx';
 import ManageProjectPanel from '../../features/projects/components/ManageProjectPanel.jsx';
 import { useProject } from '../../features/projects/hooks.js';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle.js';
@@ -128,6 +130,7 @@ export default function ProjectDetails() {
           </div>
 
           {viewer.isOwner && <ManageProjectPanel project={project} />}
+          {viewer.isOwner && <ApplicationsPanel project={project} />}
 
           <dl className="space-y-4 rounded-xl border border-line bg-white p-4">
             <Spec icon={Gauge} label="Difficulty">{difficultyLabel(project.difficulty)}</Spec>
@@ -148,20 +151,7 @@ export default function ProjectDetails() {
             </div>
           </section>
 
-          <section aria-labelledby="team" className="rounded-xl border border-line bg-white p-4">
-            <h2 id="team" className="mb-3 text-sm font-semibold">Current team ({members.length})</h2>
-            <ul className="space-y-3">
-              {members.map((member) => (
-                <li key={member.id} className="flex items-center gap-3">
-                  <Avatar name={member.name} src={member.avatarUrl} size="sm" />
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium">{member.name}</p>
-                    <p className="truncate text-xs text-slate-500">{member.title || (member.role === 'owner' ? 'Project Lead' : 'Member')}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
+          <TeamPanel project={project} members={members} viewer={viewer} />
         </aside>
       </div>
     </article>

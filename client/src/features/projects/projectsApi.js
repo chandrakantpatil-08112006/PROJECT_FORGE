@@ -52,6 +52,42 @@ export const projectsApi = apiSlice.injectEndpoints({
       query: (id) => ({ url: `/projects/${id}`, method: 'DELETE' }),
       invalidatesTags: invalidateProject,
     }),
+    createApplication: builder.mutation({
+      query: ({ id, ...body }) => ({ url: `/projects/${id}/applications`, method: 'POST', data: body }),
+      invalidatesTags: (_result, _error, { id }) => [{ type: 'Project', id }, 'MyApplications'],
+    }),
+    listProjectApplications: builder.query({
+      query: ({ id, ...params }) => ({ url: `/projects/${id}/applications`, params: cleanParams(params) }),
+      providesTags: (_result, _error, { id }) => [{ type: 'Applications', id }],
+    }),
+    decideApplication: builder.mutation({
+      query: ({ id, applicationId, status }) => ({ url: `/projects/${id}/applications/${applicationId}`, method: 'PATCH', data: { status } }),
+      invalidatesTags: (_result, _error, { id }) => [{ type: 'Project', id }, { type: 'Applications', id }, 'MyProjects', 'MyApplications'],
+    }),
+    withdrawApplication: builder.mutation({
+      query: ({ id, applicationId }) => ({ url: `/projects/${id}/applications/${applicationId}`, method: 'DELETE' }),
+      invalidatesTags: (_result, _error, { id }) => [{ type: 'Project', id }, { type: 'Applications', id }, 'MyApplications'],
+    }),
+    myApplications: builder.query({
+      query: (params = {}) => ({ url: '/projects/applications/mine', params: cleanParams(params) }),
+      providesTags: ['MyApplications'],
+    }),
+    receivedApplications: builder.query({
+      query: (params = {}) => ({ url: '/projects/applications/received', params: cleanParams(params) }),
+      providesTags: ['MyApplications'],
+    }),
+    removeTeamMember: builder.mutation({
+      query: ({ id, memberId }) => ({ url: `/projects/${id}/team/${memberId}`, method: 'DELETE' }),
+      invalidatesTags: (result, error, arg) => [...invalidateProject(result, error, arg), 'MyApplications'],
+    }),
+    leaveProject: builder.mutation({
+      query: (id) => ({ url: `/projects/${id}/team/me`, method: 'DELETE' }),
+      invalidatesTags: (result, error, id) => [...invalidateProject(result, error, id), 'MyApplications'],
+    }),
+    transferProjectOwner: builder.mutation({
+      query: ({ id, userId }) => ({ url: `/projects/${id}/owner`, method: 'PATCH', data: { userId } }),
+      invalidatesTags: (result, error, arg) => [...invalidateProject(result, error, arg), 'MyApplications'],
+    }),
   }),
 });
 
@@ -65,4 +101,13 @@ export const {
   useUnpublishProjectMutation,
   useChangeProjectStatusMutation,
   useDeleteProjectMutation,
+  useCreateApplicationMutation,
+  useListProjectApplicationsQuery,
+  useDecideApplicationMutation,
+  useWithdrawApplicationMutation,
+  useMyApplicationsQuery,
+  useReceivedApplicationsQuery,
+  useRemoveTeamMemberMutation,
+  useLeaveProjectMutation,
+  useTransferProjectOwnerMutation,
 } = projectsApi;

@@ -1,4 +1,5 @@
 import { PROJECT_TRANSITIONS, PUBLIC_PROJECT_STATUSES } from '../constants/enums.js';
+import { Application } from '../models/Application.js';
 import { Project } from '../models/Project.js';
 import { Skill, SKILL_PUBLIC_FIELDS } from '../models/Skill.js';
 import { TeamMembership } from '../models/TeamMembership.js';
@@ -218,6 +219,9 @@ export async function getProjectDetails(id, viewer) {
   const viewerIsOwner = isOwner(project, viewer);
   const viewerIsMember = Boolean(viewer) && memberships.some((m) => String(m.user._id) === String(viewer._id));
   const hasOpenRole = project.roles.some((role) => role.filled < role.slots);
+  const viewerApplication = viewer && !viewerIsOwner
+    ? await Application.findOne({ project: project._id, applicant: viewer._id, status: { $in: ['pending', 'accepted'] } }).select('status roleId')
+    : null;
 
   return {
     ...project.toJSON(),
@@ -231,9 +235,15 @@ export async function getProjectDetails(id, viewer) {
       joinedAt: m.joinedAt,
     })),
     viewer: {
+      userId: viewer?._id ? String(viewer._id) : null,
       isOwner: viewerIsOwner,
       isMember: viewerIsMember,
       canApply: Boolean(viewer) && !viewerIsOwner && !viewerIsMember && project.status === 'recruiting' && hasOpenRole,
+      application: viewerApplication ? {
+        id: String(viewerApplication._id),
+        status: viewerApplication.status,
+        roleId: String(viewerApplication.roleId),
+      } : null,
     },
   };
 }
