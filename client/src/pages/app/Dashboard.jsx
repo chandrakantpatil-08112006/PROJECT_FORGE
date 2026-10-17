@@ -29,7 +29,7 @@ function profileChecklist(user) {
 
 function Stat({ label, value }) {
   return (
-    <div className="rounded-xl border border-line bg-white p-4">
+    <div className="dashboard-stat rounded-xl border border-line bg-white p-4">
       <dt className="text-sm text-slate-500">{label}</dt>
       <dd className="mt-1 font-display text-3xl font-semibold">{value}</dd>
     </div>
@@ -60,7 +60,7 @@ export default function Dashboard() {
         }
       />
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_20rem]">
+      <div className="dashboard-layout grid gap-8 lg:grid-cols-[1fr_20rem]">
         <div className="min-w-0 space-y-8">
           <section aria-labelledby="stats">
             <h2 id="stats" className="sr-only">Project summary</h2>
@@ -113,7 +113,7 @@ export default function Dashboard() {
         </div>
 
         <aside className="space-y-5">
-          <section aria-labelledby="profile" className="rounded-xl border border-line bg-white p-4">
+          <section aria-labelledby="profile" className="profile-card rounded-xl border border-line bg-white p-4">
             <div className="flex items-center gap-3">
               <Avatar name={user.name} src={user.avatarUrl} size="lg" />
               <div className="min-w-0">

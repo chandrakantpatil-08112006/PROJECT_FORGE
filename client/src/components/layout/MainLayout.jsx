@@ -11,7 +11,7 @@ export default function MainLayout() {
         Skip to content
       </a>
       <Navbar />
-      <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">
+      <main id="main" className="main-content mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">
         <Outlet />
       </main>
       <footer className="border-t border-line bg-white">

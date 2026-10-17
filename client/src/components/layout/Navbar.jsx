@@ -10,7 +10,7 @@ import UserMenu from './UserMenu.jsx';
 
 const linkStyles = ({ isActive }) =>
   cn(
-    'rounded-md px-3 py-2 text-sm font-medium transition-colors',
+    'nav-link rounded-full px-3 py-2 text-sm font-medium transition-colors',
     isActive ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-100 hover:text-ink',
   );
 
@@ -30,7 +30,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-20 border-b border-line bg-white/95 backdrop-blur">
+    <header className="site-header sticky top-0 z-20 border-b border-line bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-6">
         <Logo to={authed ? '/dashboard' : '/'} />
 

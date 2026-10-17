@@ -67,7 +67,7 @@ export default function ProjectDetails() {
   const openSpots = roles.reduce((sum, role) => sum + role.openSlots, 0);
 
   return (
-    <article className="space-y-8">
+    <article className="project-detail space-y-8">
       <div className="overflow-hidden rounded-xl border border-line">
         <ProjectBanner project={project} className="h-44 sm:h-60" />
       </div>
