@@ -1,14 +1,14 @@
 import { X } from 'lucide-react';
 import { cn } from '../../lib/cn.js';
+import { skillTone } from '../../lib/theme.js';
 
-/** A skill chip. Pass onRemove to make it removable (used in pickers). */
+/** A skill chip, tinted by the skill's category. Pass onRemove to make it removable (used in pickers). */
 export default function SkillBadge({ skill, onRemove, className }) {
+  const tone = skillTone(skill.category);
   return (
     <span
-      className={cn(
-        'inline-flex items-center gap-1 rounded-md border border-brand-200 bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-800',
-        className,
-      )}
+      style={{ '--sk-bg': tone.bg, '--sk-fg': tone.fg, '--sk-bd': tone.bd }}
+      className={cn('skill-badge inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold', className)}
     >
       {skill.name}
       {onRemove && (
@@ -16,7 +16,7 @@ export default function SkillBadge({ skill, onRemove, className }) {
           type="button"
           onClick={onRemove}
           aria-label={`Remove ${skill.name}`}
-          className="-mr-1 rounded p-0.5 text-brand-700 hover:bg-brand-100"
+          className="-mr-1.5 rounded-full p-0.5 opacity-70 transition hover:bg-black/10 hover:opacity-100"
         >
           <X className="h-3 w-3" aria-hidden="true" />
         </button>

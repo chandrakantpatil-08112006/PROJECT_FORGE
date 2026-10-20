@@ -13,7 +13,7 @@ function pageWindow(page, totalPages) {
   return items;
 }
 
-const itemStyles = 'inline-flex h-9 min-w-9 items-center justify-center rounded-lg border px-2 text-sm font-medium transition-colors';
+const itemStyles = 'inline-flex h-9 min-w-9 items-center justify-center rounded-xl border px-2 text-sm font-semibold transition-all duration-200';
 
 export default function Pagination({ page, totalPages, onChange, className }) {
   if (totalPages <= 1) return null;
@@ -25,7 +25,7 @@ export default function Pagination({ page, totalPages, onChange, className }) {
         onClick={() => onChange(page - 1)}
         disabled={page <= 1}
         aria-label="Previous page"
-        className={cn(itemStyles, 'border-line bg-white hover:bg-slate-50 disabled:opacity-50')}
+        className={cn(itemStyles, 'border-line bg-white text-slate-600 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 disabled:pointer-events-none disabled:opacity-45')}
       >
         <ChevronLeft className="h-4 w-4" aria-hidden="true" />
       </button>
@@ -42,7 +42,7 @@ export default function Pagination({ page, totalPages, onChange, className }) {
             aria-current={item === page ? 'page' : undefined}
             className={cn(
               itemStyles,
-              item === page ? 'border-brand-600 bg-brand-600 text-white' : 'border-line bg-white hover:bg-slate-50',
+              item === page ? 'border-transparent bg-gradient-to-br from-brand-600 to-violet-600 text-white shadow-md shadow-brand-600/30' : 'border-line bg-white text-slate-600 hover:-translate-y-0.5 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700',
             )}
           >
             {item}
@@ -55,7 +55,7 @@ export default function Pagination({ page, totalPages, onChange, className }) {
         onClick={() => onChange(page + 1)}
         disabled={page >= totalPages}
         aria-label="Next page"
-        className={cn(itemStyles, 'border-line bg-white hover:bg-slate-50 disabled:opacity-50')}
+        className={cn(itemStyles, 'border-line bg-white text-slate-600 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 disabled:pointer-events-none disabled:opacity-45')}
       >
         <ChevronRight className="h-4 w-4" aria-hidden="true" />
       </button>

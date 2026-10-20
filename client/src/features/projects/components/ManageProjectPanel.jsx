@@ -26,6 +26,14 @@ const ACTIONS = {
   archived: [{ key: 'draft', label: 'Restore as draft', primary: true }],
 };
 
+// The lifecycle shown to the owner. "archived" sits outside it.
+const LIFECYCLE = [
+  { key: 'draft', label: 'Draft' },
+  { key: 'recruiting', label: 'Recruiting' },
+  { key: 'in_progress', label: 'Building' },
+  { key: 'completed', label: 'Done' },
+];
+
 const SUCCESS = {
   publish: 'Project published',
   unpublish: 'Project moved back to draft',
@@ -69,9 +77,23 @@ export default function ManageProjectPanel({ project }) {
     }
   };
 
+  const currentStep = LIFECYCLE.findIndex((step) => step.key === project.status);
+
   return (
-    <section aria-labelledby="manage" className="space-y-3 rounded-xl border border-brand-200 bg-brand-50/60 p-4">
-      <h2 id="manage" className="text-base font-semibold">Manage project</h2>
+    <section aria-labelledby="manage" className="card space-y-4 border-brand-200 bg-gradient-to-br from-brand-50 to-white p-4 sm:p-5">
+      <h2 id="manage" className="text-base font-bold">Manage project</h2>
+
+      {currentStep >= 0 ? (
+        <ol className="lifecycle" aria-label="Project lifecycle">
+          {LIFECYCLE.map((step, index) => (
+            <li key={step.key} className={`lifecycle-step ${index < currentStep ? 'is-done' : ''} ${index === currentStep ? 'is-current' : ''}`} aria-current={index === currentStep ? 'step' : undefined}>
+              {step.label}
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800">This project is archived.</p>
+      )}
 
       {project.status === 'draft' && (
         <p className="text-sm text-slate-600">This is a draft. Only you can see it until you publish.</p>

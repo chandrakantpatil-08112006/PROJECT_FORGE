@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react';
+import { Search, Trash2 } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useSearchSkillsQuery } from '../../features/skills/skillsApi.js';
 import { useDebounce } from '../../hooks/useDebounce.js';
@@ -38,7 +38,7 @@ export default function SkillPicker({ label = 'Skills', value, onChange, max, er
   return (
     <div className="space-y-2">
       <div className="flex items-baseline justify-between gap-2">
-        <label htmlFor={id} className="block text-sm font-medium text-slate-800">{label}</label>
+        <label htmlFor={id} className="block text-sm font-semibold text-slate-800">{label}</label>
         {max !== undefined && (
           <span className={cn('text-xs', atMax ? 'font-medium text-amber-700' : 'text-slate-500')} aria-live="polite">
             {value.length}/{max} selected
@@ -47,17 +47,28 @@ export default function SkillPicker({ label = 'Skills', value, onChange, max, er
       </div>
 
       {value.length > 0 && (
-        <ul aria-label="Selected skills" className="flex flex-wrap gap-1.5">
-          {value.map((skill) => (
-            <li key={skill.id}>
-              <SkillBadge skill={skill} onRemove={() => remove(skill.id)} />
-            </li>
-          ))}
-        </ul>
+        <div className="flex items-start justify-between gap-3 rounded-xl border border-brand-100 bg-brand-50/40 p-2.5">
+          <ul aria-label="Selected skills" className="flex flex-wrap gap-1.5">
+            {value.map((skill) => (
+              <li key={skill.id}>
+                <SkillBadge skill={skill} onRemove={() => remove(skill.id)} />
+              </li>
+            ))}
+          </ul>
+          {value.length > 1 && (
+            <button
+              type="button"
+              onClick={() => onChange([])}
+              className="inline-flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 transition-colors hover:bg-white hover:text-rose-700 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/20"
+            >
+              <Trash2 className="h-3 w-3" aria-hidden="true" /> Clear all
+            </button>
+          )}
+        </div>
       )}
 
-      <div className={cn('rounded-lg border bg-white', error ? 'border-rose-400' : 'border-line')}>
-        <div className={cn('flex gap-2 border-b border-line p-2', compact && 'flex-col')}>
+      <div className={cn('overflow-hidden rounded-xl border bg-white shadow-sm shadow-slate-900/[0.03]', error ? 'border-rose-400' : 'border-line')}>
+        <div className={cn('flex gap-2 border-b border-line bg-slate-50/70 p-2', compact && 'flex-col')}>
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
             <input
@@ -73,14 +84,14 @@ export default function SkillPicker({ label = 'Skills', value, onChange, max, er
               }}
               placeholder="Search skills (Enter adds the first match)"
               aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
-              className="h-9 w-full rounded-md border border-line bg-white pl-8 pr-2 text-sm placeholder:text-slate-400"
+              className="h-9 w-full rounded-lg border border-line bg-white pl-8 pr-2 text-sm placeholder:text-slate-400 transition focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/15"
             />
           </div>
           <select
             value={category}
             onChange={(event) => setCategory(event.target.value)}
             aria-label="Filter skills by category"
-            className="h-9 rounded-md border border-line bg-white px-2 text-sm"
+            className="h-9 rounded-lg border border-line bg-white px-2 text-sm transition focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/15"
           >
             <option value="">All categories</option>
             {SKILL_CATEGORIES.map((item) => (
@@ -89,6 +100,7 @@ export default function SkillPicker({ label = 'Skills', value, onChange, max, er
           </select>
         </div>
 
+        <p className="sr-only" role="status">{data ? `${options.length} ${options.length === 1 ? 'skill' : 'skills'} available` : 'Loading skills'}</p>
         <div className={cn('overflow-y-auto p-2', compact ? 'max-h-40' : 'max-h-52')} aria-busy={isFetching}>
           {isError ? (
             <p className="p-2 text-sm text-rose-700">
@@ -112,7 +124,7 @@ export default function SkillPicker({ label = 'Skills', value, onChange, max, er
                     onClick={() => add(skill)}
                     disabled={atMax}
                     title={SKILL_CATEGORIES.find((item) => item.value === skill.category)?.label}
-                    className="rounded-md border border-line bg-slate-50 px-2 py-1 text-xs font-medium text-slate-700 transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-800 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="skill-add rounded-full px-2.5 py-1 text-xs font-semibold focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/20 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     + {skill.name}
                   </button>

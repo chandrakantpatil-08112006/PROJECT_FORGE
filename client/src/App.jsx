@@ -55,7 +55,15 @@ export default function App() {
         </Routes>
       </Suspense>
 
-      <Toaster position="top-right" toastOptions={{ duration: 4000, style: { fontSize: '0.875rem' } }} />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: { fontSize: '0.875rem', fontWeight: 500, borderRadius: '14px', border: '1px solid #e4e7f0', boxShadow: '0 18px 40px -18px rgba(49, 46, 129, .4)', padding: '12px 16px', color: '#0f172a' },
+          success: { iconTheme: { primary: '#10b981', secondary: '#ffffff' } },
+          error: { iconTheme: { primary: '#f43f5e', secondary: '#ffffff' } },
+        }}
+      />
     </BrowserRouter>
   );
 }

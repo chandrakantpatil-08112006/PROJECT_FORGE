@@ -11,7 +11,7 @@ const tones = {
 export default function Alert({ tone = 'error', title, children, className }) {
   const { box, icon: Icon, iconClass } = tones[tone];
   return (
-    <div role={tone === 'error' ? 'alert' : 'status'} className={cn('flex gap-3 rounded-lg border p-3 text-sm', box, className)}>
+    <div role={tone === 'error' ? 'alert' : 'status'} className={cn('flex gap-3 rounded-xl border p-3.5 text-sm shadow-sm motion-safe:animate-[card-enter_.4s_var(--ease)_both]', box, className)}>
       <Icon className={cn('mt-0.5 h-4 w-4 shrink-0', iconClass)} aria-hidden="true" />
       <div className="min-w-0">
         {title && <p className="font-semibold">{title}</p>}

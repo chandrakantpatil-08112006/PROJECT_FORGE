@@ -7,9 +7,9 @@ import { DIFFICULTIES, EXPLORE_STATUS_OPTIONS, PROJECT_CATEGORIES } from '../../
 /** Filter panel for Explore. Fully controlled: the URL is the source of truth. */
 export default function ProjectFilters({ values, skills, onChange, onSkillsChange, onClear, activeCount }) {
   return (
-    <div className="space-y-5 rounded-xl border border-line bg-white p-4">
+    <div className="space-y-5 card p-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold">Filters</h2>
+        <h2 className="text-base font-bold">Filters</h2>
         {activeCount > 0 && (
           <Button variant="ghost" size="sm" onClick={onClear}>
             <X className="h-3.5 w-3.5" aria-hidden="true" /> Clear ({activeCount})
@@ -39,7 +39,7 @@ export default function ProjectFilters({ values, skills, onChange, onSkillsChang
               type="checkbox"
               checked={values.match === 'all'}
               onChange={(e) => onChange({ match: e.target.checked ? 'all' : 'any' })}
-              className="h-4 w-4 rounded border-line accent-brand-600"
+              className="h-4 w-4 rounded border-line accent-brand-600 transition"
             />
             Must require all selected skills
           </label>

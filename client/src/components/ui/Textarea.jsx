@@ -15,7 +15,7 @@ export default function Textarea({ label, hint, error, required, id, count, max,
         required={required}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy(textareaId, error, hint)}
-        className={cn(controlStyles(error), 'resize-y py-2 leading-relaxed')}
+        className={cn(controlStyles(error), 'resize-y py-2.5 leading-relaxed')}
         {...props}
       />
       {max !== undefined && (

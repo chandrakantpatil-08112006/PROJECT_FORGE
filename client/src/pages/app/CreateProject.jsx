@@ -1,5 +1,6 @@
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router';
+import { Rocket } from 'lucide-react';
 import PageHeader from '../../components/common/PageHeader.jsx';
 import ProjectForm from '../../features/projects/components/ProjectForm.jsx';
 import { useCreateProjectMutation, usePublishProjectMutation } from '../../features/projects/projectsApi.js';
@@ -30,10 +31,8 @@ export default function CreateProject() {
 
   return (
     <>
-      <PageHeader title="Create a project" description="Describe what you're building and who you need. You can save a draft and publish later." />
-      <div className="max-w-3xl">
-        <ProjectForm mode="create" onSave={onSave} />
-      </div>
+      <PageHeader compact icon={Rocket} title="Create a project" description="Describe what you're building and who you need. You can save a draft and publish later." />
+      <ProjectForm mode="create" onSave={onSave} cancelTo="/my-projects" />
     </>
   );
 }

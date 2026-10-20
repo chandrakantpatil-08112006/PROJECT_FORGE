@@ -1,8 +1,7 @@
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { Pencil, Plus, Search, Tags, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import PageHeader from '../../components/common/PageHeader.jsx';
-import Badge from '../../components/ui/Badge.jsx';
 import Button from '../../components/ui/Button.jsx';
 import ConfirmDialog from '../../components/ui/ConfirmDialog.jsx';
 import EmptyState from '../../components/ui/EmptyState.jsx';
@@ -20,6 +19,7 @@ import {
 import { useDebounce } from '../../hooks/useDebounce.js';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle.js';
 import { LIMITS, SKILL_CATEGORIES, skillCategoryLabel } from '../../lib/constants.js';
+import { skillTone } from '../../lib/theme.js';
 
 function CategorySelect(props) {
   return (
@@ -49,12 +49,15 @@ function AddSkillForm() {
   };
 
   return (
-    <form onSubmit={submit} className="mb-6 flex flex-wrap items-end gap-3 rounded-xl border border-line bg-white p-4">
+    <form onSubmit={submit} className="mb-6 card p-4 sm:p-5" aria-label="Add a skill">
+      <h2 className="mb-3 flex items-center gap-2 text-sm font-bold"><Plus className="h-4 w-4 text-brand-600" aria-hidden="true" /> Add a new skill</h2>
+      <div className="flex flex-wrap items-end gap-3">
       <Input className="min-w-48 flex-1" label="New skill" value={name} onChange={(e) => setName(e.target.value)} maxLength={LIMITS.SKILL_NAME_MAX} error={error} required />
       <CategorySelect label="Category" value={category} onChange={(e) => setCategory(e.target.value)} className="w-48" />
       <Button type="submit" loading={isLoading} disabled={!name.trim()}>
         <Plus className="h-4 w-4" aria-hidden="true" /> Add skill
       </Button>
+      </div>
     </form>
   );
 }
@@ -92,13 +95,14 @@ function SkillRow({ skill, onDelete }) {
   }
 
   return (
-    <li className="flex flex-wrap items-center justify-between gap-3 p-3">
-      <div className="min-w-0">
-        <span className="font-medium">{skill.name}</span>
-        <span className="ml-2 text-xs text-slate-400">{skill.slug}</span>
+    <li className="list-row flex flex-wrap items-center justify-between gap-3 p-3">
+      <div className="flex min-w-0 items-center gap-3">
+        <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: skillTone(skill.category).fg }} aria-hidden="true" />
+        <span className="font-semibold">{skill.name}</span>
+        <span className="truncate font-mono text-xs text-slate-500">{skill.slug}</span>
       </div>
       <div className="flex items-center gap-2">
-        <Badge>{skillCategoryLabel(skill.category)}</Badge>
+        <span className="skill-badge rounded-full px-2.5 py-0.5 text-xs font-semibold" style={{ '--sk-bg': skillTone(skill.category).bg, '--sk-fg': skillTone(skill.category).fg, '--sk-bd': skillTone(skill.category).bd }}>{skillCategoryLabel(skill.category)}</span>
         <Button variant="ghost" size="sm" onClick={() => setEditing(true)} aria-label={`Edit ${skill.name}`}><Pencil className="h-4 w-4" aria-hidden="true" /></Button>
         <Button variant="ghost" size="sm" onClick={() => onDelete(skill)} aria-label={`Delete ${skill.name}`}><Trash2 className="h-4 w-4 text-rose-600" aria-hidden="true" /></Button>
       </div>
@@ -130,27 +134,29 @@ export default function AdminSkills() {
 
   return (
     <>
-      <PageHeader title="Manage skills" description="The predefined list people choose from on profiles and projects." />
+      <PageHeader compact icon={Tags} tone="rose" title="Manage skills" description="The predefined list people choose from on profiles and projects." />
       <AddSkillForm />
 
-      <div className="mb-4 flex flex-wrap items-end gap-3">
-        <Input className="min-w-48 flex-1" label="Search" type="search" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} placeholder="Filter by name" />
-        <Select label="Category" value={category} onChange={(e) => { setCategory(e.target.value); setPage(1); }} className="w-48">
-          <option value="">All categories</option>
-          {SKILL_CATEGORIES.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
-        </Select>
+      <div className="mb-4 space-y-3">
+        <Input label="Search" icon={Search} type="search" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} placeholder="Filter by name" />
+        <div className="chip-scroll -mx-1" role="group" aria-label="Filter by category">
+          <button type="button" className="cat-chip" aria-pressed={category === ''} onClick={() => { setCategory(''); setPage(1); }}>All categories</button>
+          {SKILL_CATEGORIES.map((item) => (
+            <button key={item.value} type="button" className="cat-chip" aria-pressed={category === item.value} onClick={() => { setCategory(item.value); setPage(1); }}>{item.label}</button>
+          ))}
+        </div>
       </div>
 
       {isLoading ? (
-        <div className="space-y-2">{Array.from({ length: 6 }, (_, i) => <Skeleton key={i} className="h-12 w-full" />)}</div>
+        <div className="space-y-2" role="status" aria-label="Loading skills">{Array.from({ length: 6 }, (_, i) => <Skeleton key={i} className="h-12 w-full" />)}</div>
       ) : error ? (
         <ErrorState error={error} onRetry={refetch} />
       ) : data.items.length === 0 ? (
-        <EmptyState title="No skills found" description="Try a different search, or add the skill above." />
+        <EmptyState icon={Tags} title="No skills found" description="Try a different search, or add the skill above." />
       ) : (
         <>
-          <p className="mb-2 text-sm text-slate-600">{data.meta.total} skills</p>
-          <ul className="divide-y divide-line rounded-xl border border-line bg-white">
+          <p className="mb-2 text-sm font-semibold text-slate-600" aria-live="polite">{data.meta.total} {data.meta.total === 1 ? 'skill' : 'skills'}</p>
+          <ul className="divide-y divide-line card overflow-hidden">
             {data.items.map((skill) => <SkillRow key={skill.id} skill={skill} onDelete={setToDelete} />)}
           </ul>
           <Pagination className="mt-6" page={data.meta.page} totalPages={data.meta.totalPages} onChange={setPage} />
